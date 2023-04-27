@@ -1,6 +1,7 @@
 import { Entity, Property, Unique, OneToMany, Collection, Cascade } from "@mikro-orm/core";
 import { BaseEntity } from "./BaseEntity.js";
 import { Match } from "./Match.js";
+import { Messages } from "./Messages.js";
 
 @Entity({ tableName: "users"})
 export class User extends BaseEntity {	
@@ -28,5 +29,20 @@ export class User extends BaseEntity {
 		{cascade: [Cascade.PERSIST, Cascade.REMOVE]}
 	)
 	matched_by!: Collection<Match>;
+	
+	// Note that these DO NOT EXIST in the database itself!
+	@OneToMany(
+		() => Messages,
+		message => message.sender,
+		{cascade: [Cascade.PERSIST, Cascade.REMOVE]}
+	)
+	recieved_messages!: Collection<Messages>;
+	
+	@OneToMany(
+		() => Messages,
+		message => message.receiver,
+		{cascade: [Cascade.PERSIST, Cascade.REMOVE]}
+	)
+	sent_messages!: Collection<Messages>;
 
 }
