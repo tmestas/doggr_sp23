@@ -13,12 +13,15 @@ export class Messages {
 	
 	// The person who performed the match/swiped right
 	@ManyToOne()
-	sender!: Rel<User>;
+	sending_user!: Rel<User>;
 	
 	// The account whose profile was swiped-right-on
 	@ManyToOne()
-	receiver!: Rel<User>;
-	
+	receiving_user!: Rel<User>;
+
+	@Property()
+	message: string;
+
 	@Property()
 	created_at = new Date();
 	

@@ -2,6 +2,7 @@ import {FastifyInstance, FastifyReply, FastifyRequest} from "fastify";
 import { Match } from "./db/entities/Match.js";
 import {User} from "./db/entities/User.js";
 import {ICreateUsersBody} from "./types.js";
+import {Messages} from "./db/entities/Messages.js";
 
 async function DoggrRoutes(app: FastifyInstance, _options = {}) {
 	if (!app) {
@@ -124,6 +125,34 @@ async function DoggrRoutes(app: FastifyInstance, _options = {}) {
 			await req.em.flush();
 			// send the match back to the user
 			return reply.send(newMatch);
+		} catch (err) {
+			console.error(err);
+			return reply.status(500).send(err);
+		}
+
+	});
+
+	app.post<{Body: { sender: string, receiver: string, message: string}}>
+	("/messages", async (req, reply) => {
+		const { sender, receiver, message} = req.body;
+
+		try {
+			// make sure that the matchee exists & get their user account
+			const receiving_user = await req.em.findOne(User, { email: receiver});
+			// do the same for the matcher/owner
+			const sending_user= await req.em.findOne(User, { email: sender});
+
+			//create a new match between them
+			const newMessage = await req.em.create(Messages, {
+				sending_user,
+				receiving_user,
+				message
+			});
+
+			//persist it to the database
+			await req.em.flush();
+			// send the match back to the user
+			return reply.send(newMessage);
 		} catch (err) {
 			console.error(err);
 			return reply.status(500).send(err);

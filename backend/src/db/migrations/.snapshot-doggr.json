@@ -99,8 +99,8 @@
           "nullable": false,
           "mappedType": "integer"
         },
-        "sender_id": {
-          "name": "sender_id",
+        "sending_user_id": {
+          "name": "sending_user_id",
           "type": "int",
           "unsigned": false,
           "autoincrement": false,
@@ -108,14 +108,23 @@
           "nullable": false,
           "mappedType": "integer"
         },
-        "receiver_id": {
-          "name": "receiver_id",
+        "receiving_user_id": {
+          "name": "receiving_user_id",
           "type": "int",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
           "mappedType": "integer"
+        },
+        "message": {
+          "name": "message",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
         },
         "created_at": {
           "name": "created_at",
@@ -143,10 +152,10 @@
       ],
       "checks": [],
       "foreignKeys": {
-        "messages_sender_id_foreign": {
-          "constraintName": "messages_sender_id_foreign",
+        "messages_sending_user_id_foreign": {
+          "constraintName": "messages_sending_user_id_foreign",
           "columnNames": [
-            "sender_id"
+            "sending_user_id"
           ],
           "localTableName": "public.messages",
           "referencedColumnNames": [
@@ -155,10 +164,10 @@
           "referencedTableName": "public.users",
           "updateRule": "cascade"
         },
-        "messages_receiver_id_foreign": {
-          "constraintName": "messages_receiver_id_foreign",
+        "messages_receiving_user_id_foreign": {
+          "constraintName": "messages_receiving_user_id_foreign",
           "columnNames": [
-            "receiver_id"
+            "receiving_user_id"
           ],
           "localTableName": "public.messages",
           "referencedColumnNames": [
