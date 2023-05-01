@@ -159,6 +159,88 @@ async function DoggrRoutes(app: FastifyInstance, _options = {}) {
 		}
 
 	});
+
+	app.search("/messages/sent", async (req, reply) => {
+		const { sender} = req.body;
+
+		const email = sender;
+
+		try {
+			const theUser = await req.em.findOne(User, { email});
+			const sending_user = theUser.id;
+			const theMessages = await req.em.find(Messages, {sending_user});
+			reply.send(theMessages);
+		} catch (err) {
+			console.error(err);
+			reply.status(500).send(err);
+		}
+	});
+
+	app.search("/messages", async (req, reply) => {
+		const {receiver} = req.body;
+
+		const email = receiver;
+
+		try {
+			const theUser = await req.em.findOne(User, { email});
+			const receiving_user = theUser.id;
+			const theMessages = await req.em.find(Messages, {receiving_user});
+			reply.send(theMessages);
+		} catch (err) {
+			console.error(err);
+			reply.status(500).send(err);
+		}
+	});
+
+	app.put<{Body: { messageId: number, message: string}}>("/messages", async(req, reply) => {
+		const { messageId, message} = req.body;
+
+		const id = messageId;
+
+		const messageToChange = await req.em.findOne(Messages, {id});
+		messageToChange.message = message;
+
+		// Reminder -- this is how we persist our JS object changes to the database itself
+		await req.em.flush();
+		console.log(messageToChange);
+		reply.send(messageToChange);
+	});
+
+	app.delete<{ Body: {messageId: number}}>("/messages", async(req, reply) => {
+		const { messageId } = req.body;
+
+		const id = messageId;
+
+		try {
+			const theMessage = await req.em.findOne(Messages, { id });
+
+			await req.em.remove(theMessage).flush();
+			console.log(theMessage);
+			reply.send(theMessage);
+		} catch (err) {
+			console.error(err);
+			reply.status(500).send(err);
+		}
+	});
+
+	app.delete<{ Body: {sender: string}}>("/messages/all", async(req, reply) => {
+		const { sender } = req.body;
+
+		const email = sender;
+
+		try {
+			const theUser = await req.em.findOne(User, {email});
+			const sending_user = theUser.id;
+			const theMessages = await req.em.find(Messages, {sending_user});
+			await req.em.remove(theMessages).flush();
+			reply.send(theMessages);
+		} catch (err) {
+			console.error(err);
+			reply.status(500).send(err);
+		}
+	});
+
+
 }
 
 export default DoggrRoutes;
