@@ -212,14 +212,26 @@ async function DoggrRoutes(app: FastifyInstance, _options = {}) {
 		const { messageId, message} = req.body;
 
 		const id = messageId;
+		let badWord = false;
 
-		const messageToChange = await req.em.findOne(Messages, {id});
-		messageToChange.message = message;
+		const badWordsPath = "../backend/badwords.txt";
+		const data = fs.readFileSync(badWordsPath).toString();
+		const badWords = data.split(/\r?\n/);
 
-		// Reminder -- this is how we persist our JS object changes to the database itself
-		await req.em.flush();
-		console.log(messageToChange);
-		reply.send(messageToChange);
+		for(let i =0; i < badWords.length; i++){
+			if(message.includes(badWords[i])){badWord = true;}
+		}
+
+		if(!badWord) {
+			const messageToChange = await req.em.findOne(Messages, {id});
+			messageToChange.message = message;
+			await req.em.flush();
+			console.log(messageToChange);
+			reply.send(messageToChange);
+		}else{
+			console.error("You tried to edit an existing message to a naughty message");
+			return reply.status(500).send("You tried to edit an existing message to a naughty message");
+		}
 	});
 
 	app.delete<{ Body: {messageId: number}}>("/messages", async(req, reply) => {
