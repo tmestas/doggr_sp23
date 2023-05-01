@@ -234,41 +234,49 @@ async function DoggrRoutes(app: FastifyInstance, _options = {}) {
 		}
 	});
 
-	app.delete<{ Body: {messageId: number}}>("/messages", async(req, reply) => {
-		const { messageId } = req.body;
+	app.delete<{ Body: {messageId: number, password: string}}>("/messages", async(req, reply) => {
+		const { messageId, password } = req.body;
 
-		const id = messageId;
+		if(password === process.env.ADMIN_PASS) {
+			const id = messageId;
 
-		try {
-			const theMessage = await req.em.findOne(Messages, { id });
+			try {
+				const theMessage = await req.em.findOne(Messages, {id});
 
-			await req.em.remove(theMessage).flush();
-			console.log(theMessage);
-			reply.send(theMessage);
-		} catch (err) {
-			console.error(err);
-			reply.status(500).send(err);
+				await req.em.remove(theMessage).flush();
+				console.log(theMessage);
+				reply.send(theMessage);
+			} catch (err) {
+				console.error(err);
+				reply.status(500).send(err);
+			}
+		}else{
+			console.error("Invalid admin password");
+			reply.status(401).send("Invalid admin password");
 		}
 	});
 
-	app.delete<{ Body: {sender: string}}>("/messages/all", async(req, reply) => {
-		const { sender } = req.body;
+	app.delete<{ Body: {sender: string, password: string}}>("/messages/all", async(req, reply) => {
+		const { sender, password } = req.body;
 
 		const email = sender;
 
-		try {
-			const theUser = await req.em.findOne(User, {email});
-			const sending_user = theUser.id;
-			const theMessages = await req.em.find(Messages, {sending_user});
-			await req.em.remove(theMessages).flush();
-			reply.send(theMessages);
-		} catch (err) {
-			console.error(err);
-			reply.status(500).send(err);
+		if(password === process.env.ADMIN_PASS) {
+			try {
+				const theUser = await req.em.findOne(User, {email});
+				const sending_user = theUser.id;
+				const theMessages = await req.em.find(Messages, {sending_user});
+				await req.em.remove(theMessages).flush();
+				reply.send(theMessages);
+			} catch (err) {
+				console.error(err);
+				reply.status(500).send(err);
+			}
+		}else{
+			console.error("Invalid admin password");
+			reply.status(401).send("Invalid admin password");
 		}
 	});
-
-
 }
 
 export default DoggrRoutes;
