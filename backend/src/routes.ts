@@ -91,18 +91,22 @@ async function DoggrRoutes(app: FastifyInstance, _options = {}) {
 	});
 	
 	// DELETE
-	app.delete<{ Body: {email}}>("/users", async(req, reply) => {
-		const { email } = req.body;
-		
-		try {
-			const theUser = await req.em.findOne(User, { email });
-			
-			await req.em.remove(theUser).flush();
-			console.log(theUser);
-			reply.send(theUser);
-		} catch (err) {
-			console.error(err);
-			reply.status(500).send(err);
+	app.delete<{ Body: {email, password}}>("/users", async(req, reply) => {
+		const { email, password} = req.body;
+		if(password === process.env.ADMIN_PASS) {
+			try {
+				const theUser = await req.em.findOne(User, {email});
+
+				await req.em.remove(theUser).flush();
+				console.log(theUser);
+				reply.send(theUser);
+			} catch (err) {
+				console.error(err);
+				reply.status(500).send(err);
+			}
+		}else{
+			console.error("Invalid admin password");
+			reply.status(401).send("Invalid admin password");
 		}
 	});
 
