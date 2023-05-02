@@ -162,6 +162,7 @@
             "id"
           ],
           "referencedTableName": "public.users",
+          "deleteRule": "cascade",
           "updateRule": "cascade"
         },
         "messages_receiving_user_id_foreign": {
@@ -174,6 +175,7 @@
             "id"
           ],
           "referencedTableName": "public.users",
+          "deleteRule": "cascade",
           "updateRule": "cascade"
         }
       }

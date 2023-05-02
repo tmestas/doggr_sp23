@@ -12,11 +12,11 @@ export class Messages {
 	id!: number;
 	
 	// The person who performed the match/swiped right
-	@ManyToOne()
+	@ManyToOne({onDelete: 'cascade'})
 	sending_user!: Rel<User>;
 	
 	// The account whose profile was swiped-right-on
-	@ManyToOne()
+	@ManyToOne({onDelete: 'cascade'})
 	receiving_user!: Rel<User>;
 
 	@Property()

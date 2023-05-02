@@ -95,7 +95,14 @@ async function DoggrRoutes(app: FastifyInstance, _options = {}) {
 		const { email, password} = req.body;
 		if(password === process.env.ADMIN_PASS) {
 			try {
-				const theUser = await req.em.findOne(User, {email});
+				const theUser = await req.em.findOne(User, {email}, {
+					populate: [ // Collection names in User.ts
+						"matches",
+						"matched_by",
+						"sent_messages",
+						"recieved_messages"
+					]
+				});
 
 				await req.em.remove(theUser).flush();
 				console.log(theUser);
