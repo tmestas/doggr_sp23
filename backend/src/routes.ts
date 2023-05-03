@@ -3,6 +3,7 @@ import { Match } from "./db/entities/Match.js";
 import {User} from "./db/entities/User.js";
 import {ICreateUsersBody} from "./types.js";
 import {Messages} from "./db/entities/Messages.js";
+import BadWords from "./badwords.js";
 import * as fs from "fs";
 
 async function DoggrRoutes(app: FastifyInstance, _options = {}) {
@@ -156,8 +157,7 @@ async function DoggrRoutes(app: FastifyInstance, _options = {}) {
 			// do the same for the matcher/owner
 			const sending_user= await req.em.findOne(User, { email: sender});
 
-			const badWordsPath = "../backend/badwords.txt";
-			const data = fs.readFileSync(badWordsPath).toString();
+			const data = BadWords.toString();
 			const badWords = data.split(/\r?\n/);
 
 			for(let i =0; i < badWords.length; i++){
@@ -225,8 +225,7 @@ async function DoggrRoutes(app: FastifyInstance, _options = {}) {
 		const id = messageId;
 		let badWord = false;
 
-		const badWordsPath = "../backend/badwords.txt";
-		const data = fs.readFileSync(badWordsPath).toString();
+		const data = BadWords.toString();
 		const badWords = data.split(/\r?\n/);
 
 		for(let i =0; i < badWords.length; i++){
