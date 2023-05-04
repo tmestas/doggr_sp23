@@ -117,7 +117,7 @@ async function DoggrRoutes(app: FastifyInstance, _options = {}) {
 			reply.status(401).send("Invalid admin password");
 		}
 	});
-
+	
 	// CREATE MATCH ROUTE
 	app.post<{Body: { email: string, matchee_email: string }}>("/match", async (req, reply) => {
 		const { email, matchee_email } = req.body;
