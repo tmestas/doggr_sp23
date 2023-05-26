@@ -1,4 +1,3 @@
-
 import { Profile } from "@/Components/Profile.tsx";
 import { ProfileType } from "@/DoggrTypes.ts";
 import { useAuth } from "@/Services/Auth.tsx";
@@ -6,11 +5,15 @@ import { getNextProfileFromServer } from "@/Services/HttpClient.tsx";
 import { MatchService } from "@/Services/MatchService.tsx";
 import { PassService } from "@/Services/PassService.tsx";
 import { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 
 export const Match = () => {
 	const [currentProfile, setCurrentProfile] = useState<ProfileType>();
-
+	const navigate = useNavigate();
 	const auth = useAuth();
+
+
 
 	const fetchProfile = () => {
 		getNextProfileFromServer()
@@ -40,11 +43,19 @@ export const Match = () => {
 			});
 	};
 
+	const onMessageButtonClick = () => {
+		const sendingUserId = auth.userId;
+		const receivingUserId = currentProfile.id;
+		navigate(`/message/${sendingUserId}/${receivingUserId}`);
+	};
+
+
 	const profile = (
 		<Profile
 			{...currentProfile}
 			onLikeButtonClick={onLikeButtonClick}
 			onPassButtonClick={onPassButtonClick}
+			onMessageButtonClick={onMessageButtonClick}
 		/>
 	);
 
