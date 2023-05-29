@@ -42,10 +42,7 @@ export const Match = () => {
 	};
 
 	const onMessageButtonClick = () => {
-		// const sendingUserId = auth.userId;
-		const receivingUserId = currentProfile.id;
-		// navigate(`/message/${sendingUserId}/${receivingUserId}`);
-		navigate("/message", { state: { receiver_id: receivingUserId} });
+		navigate("/message", { state: { receiver: currentProfile} });
 	};
 
 	const profile = (

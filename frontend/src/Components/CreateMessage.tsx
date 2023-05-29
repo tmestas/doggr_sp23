@@ -17,14 +17,12 @@ export const CreateMessage = () => {
     const auth = useAuth();
     const senderId = auth.userId;
 
-   const locationState = useLocation().state;
-   const receiverId = locationState.receiver_id;
+    const locationState = useLocation().state;
+    const receiver = locationState.receiver;
 
-    if(senderId != receiverId){
-        console.log(senderId, receiverId);
-    }else{
-        console.log("same user");
-    }
+    const receiverId = receiver.id;
+    const receiverName = receiver.name;
+    const minioUrl= "http://localhost:9000/doggr/" + receiver.imgUri;
 
     const onSendMessage = (ev) => {
         return httpClient.post("/messages", { sender_id: senderId, receiver_id: receiverId, message: message});
@@ -32,9 +30,9 @@ export const CreateMessage = () => {
 
     return (
         <div className="flex flex-col items-center bg-slate-700 w-4/5 mx-auto p-5 rounded-box">
-
-
+            <img className="rounded w-128 h-128" src={minioUrl} alt="Profile of pet" />
             <div className="flex flex-col w-full mb-5">
+                <h2 className={"text-4xl text-blue-600"}>{receiverName}</h2>
                 <label htmlFor="message" className="text-blue-300 mb-2">Message</label>
                 <input
                     placeholder="Message..."
