@@ -1,6 +1,8 @@
-import {useParams} from "react-router-dom";
+import {useLocation, useParams} from "react-router-dom";
 import {httpClient} from "@/Services/HttpClient.tsx";
 import {useState} from "react";
+import {useAuth} from "@/Services/Auth.tsx";
+import {ProfileType} from "@/DoggrTypes.ts";
 
 export enum SubmissionStatus {
     NotSubmitted,
@@ -10,8 +12,13 @@ export enum SubmissionStatus {
 
 export const CreateMessage = () => {
 
-    const { senderId, receiverId } = useParams();
+
     const [message, setMessage] = useState("");
+    const auth = useAuth();
+    const senderId = auth.userId;
+
+   const locationState = useLocation().state;
+   const receiverId = locationState.receiver_id;
 
     if(senderId != receiverId){
         console.log(senderId, receiverId);
@@ -20,31 +27,6 @@ export const CreateMessage = () => {
     }
 
     const onSendMessage = (ev) => {
-        /*
-                const formData = new FormData();
-                formData.append("sender_id", senderId);
-                formData.append("receiver_id", receiverId);
-                formData.append("message", message);
-
-
-                // @ts-ignore
-
-
-                const config = {
-                    headers: {
-                        'content-type': 'multipart/form-data',
-                    }
-                };
-
-
-                httpClient.post("/messages", formData, config)
-                    .then( (response) => {
-                        console.log("Got response from sending message info", response.status);
-
-                    });
-
-                 */
-
         return httpClient.post("/messages", { sender_id: senderId, receiver_id: receiverId, message: message});
     };
 

@@ -13,8 +13,6 @@ export const Match = () => {
 	const navigate = useNavigate();
 	const auth = useAuth();
 
-
-
 	const fetchProfile = () => {
 		getNextProfileFromServer()
 			.then((response) => setCurrentProfile(response))
@@ -44,9 +42,10 @@ export const Match = () => {
 	};
 
 	const onMessageButtonClick = () => {
-		const sendingUserId = auth.userId;
+		// const sendingUserId = auth.userId;
 		const receivingUserId = currentProfile.id;
-		navigate(`/message/${sendingUserId}/${receivingUserId}`);
+		// navigate(`/message/${sendingUserId}/${receivingUserId}`);
+		navigate("/message", { state: { receiver_id: receivingUserId} });
 	};
 
 	const profile = (

@@ -39,7 +39,7 @@ export function DoggrRouter() {
 				<Route path="/" element={<Home />} />
 				<Route path="/match" element={<ProtectedRoute><Match /></ProtectedRoute>} />
 				<Route path="/create" element={<CreateProfile/>}/>
-				<Route path="/message/:senderId/:receiverId" element={<ProtectedRoute><CreateMessage /></ProtectedRoute>}/>
+				<Route path="/message" element={<ProtectedRoute><CreateMessage /></ProtectedRoute>}/>
 				<Route path="/login" element={<Login />} />
 				<Route path="/logout" element={<Logout />} />
 			</Routes>
