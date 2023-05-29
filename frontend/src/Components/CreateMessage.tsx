@@ -20,26 +20,32 @@ export const CreateMessage = () => {
     }
 
     const onSendMessage = (ev) => {
+        /*
+                const formData = new FormData();
+                formData.append("sender_id", senderId);
+                formData.append("receiver_id", receiverId);
+                formData.append("message", message);
 
-        const formData = new FormData();
-        formData.append("sender_id", senderId);
-        formData.append("receiver_id", receiverId);
-        formData.append("message", message);
+
+                // @ts-ignore
 
 
-        // @ts-ignore
+                const config = {
+                    headers: {
+                        'content-type': 'multipart/form-data',
+                    }
+                };
 
-        const config = {
-            headers: {
-                'content-type': 'multipart/form-data',
-            }
-        };
 
-        httpClient.post("/messages", formData, config)
-            .then( (response) => {
-                console.log("Got response from sending message info", response.status);
+                httpClient.post("/messages", formData, config)
+                    .then( (response) => {
+                        console.log("Got response from sending message info", response.status);
 
-            });
+                    });
+
+                 */
+
+        return httpClient.post("/messages", { sender_id: senderId, receiver_id: receiverId, message: message});
     };
 
     return (

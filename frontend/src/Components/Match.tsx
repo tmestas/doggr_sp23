@@ -49,7 +49,6 @@ export const Match = () => {
 		navigate(`/message/${sendingUserId}/${receivingUserId}`);
 	};
 
-
 	const profile = (
 		<Profile
 			{...currentProfile}
